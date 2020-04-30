@@ -1,0 +1,45 @@
+{
+	"pages": [{
+		"path": "pages/index/index"
+	},{
+		"path": "pages/search/search"
+	},{
+		"path": "pages/detail/detail"
+	},{
+		"path": "pages/recyclable/recyclable"
+	},{
+		"path": "pages/hazardous/hazardous"
+	},{
+		"path": "pages/household/household"
+	},{
+		"path": "pages/residual/residual"
+	},{
+		"path": "pages/tips/tips"
+	},{
+		"path": "pages/error/list"
+	},{
+		"path": "pages/index/demo"
+	},{
+		"path": "pages/userConsole/userConsole"
+	},{
+		"path": "pages/storageConsole/storageConsole"
+	},{
+		"path": "pages/databaseGuide/databaseGuide"
+	},{
+		"path": "pages/addFunction/addFunction"
+	},{
+		"path": "pages/deployFunctions/deployFunctions"
+	},{
+		"path": "pages/chooseLib/chooseLib"
+	},{
+		"path": "pages/openapi/openapi"
+	}],
+	"globalStyle": {
+		"backgroundColor": "#F6F6F6",
+		"backgroundTextStyle": "light",
+		"navigationBarBackgroundColor": "#F6F6F6",
+		"navigationBarTitleText": "垃圾分类宣传册",
+		"navigationBarTextStyle": "black",
+		"navigationStyle": "custom"
+	}
+}
