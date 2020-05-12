@@ -1,8 +1,8 @@
 <template>
 	<view class="tips">
-		<uni-nav-bar :statusBar="true" :fixed="true" left-icon="back" title="垃圾分类小贴士" @clickLeft="clickLeft" />
+		<uni-nav-bar :statusBar="true" :fixed="true" title="垃圾分类小贴士" />
 	    <view class="top suggest">
-	        <image class="img" src="../../static/images/code.jpg"></image>
+	        <image class="img" src="http://r3.3keji.com/code.jpg" @tap="viewer" ></image>
 	    </view>
 	    <view class="suggest">
 	        <view class="title">
@@ -32,6 +32,11 @@
 	        <view>👉 到2022年，各地级城市至少有1个区实现生活垃圾分类全覆盖，其他各区至少有1个街道基本建成生活垃圾分类示范片区。</view>
 	        <view>👉 到2025年，全国地级及以上城市基本建成生活垃圾分类处理系统。</view>
 	    </view>
+	    <view class="share">
+	        <image hight="20rpx" src="../../static/images/share.png"></image>
+	        <text>分享</text>
+	        <button openType="share"></button>
+	    </view>
 	    <!-- <view class="adContainer">
 	        <ad unitId="adunit-56a28d959d8baef5"></ad>
 	    </view> -->
@@ -52,11 +57,11 @@
 			};
 		},
 		methods:{
-			clickLeft(){
-				uni.navigateBack({
-					delta:1
+			viewer(){
+				uni.previewImage({
+					urls:['http://r3.3keji.com/code.jpg']
 				})
-			},
+			}
 		}
 	}
 </script>
@@ -72,8 +77,7 @@
 	.suggest {
 	    background: #fff;
 	    border: 1px solid #eeeeee;
-	    border-radius: 20rpx;
-	    margin: 20rpx 0;
+	    margin: 20rpx;
 	    padding: 20rpx;
 	}
 	
@@ -82,7 +86,6 @@
 	}
 	
 	.top {
-	    margin: 0;
 	    text-align: center;
 	}
 	
@@ -94,5 +97,37 @@
 	.title {
 	    color: red;
 	    padding-bottom: 10rpx;
+	}
+	.share {
+	    height: 110rpx;
+	    width: 110rpx;
+	    position: fixed;
+	    bottom: 40rpx;
+	    right: 20rpx;
+	    display: flex;
+	    flex-direction: column;
+	    align-items: center;
+	    justify-content: center;
+	    font-size: 24rpx;
+	    background: rgba(0,0,0,.6);
+	    border-radius: 50%;
+	    z-index: 10;
+	}
+	
+	.share image {
+	    height: 50rpx;
+	    width: 50rpx;
+	}
+	
+	.share text {
+	    color: #fff;
+	}
+	
+	.share button {
+	    position: absolute;
+	    height: 100%;
+	    width: 100%;
+	    opacity: 0.1;
+	    z-index: 99;
 	}
 </style>

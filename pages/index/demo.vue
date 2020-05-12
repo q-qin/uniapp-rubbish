@@ -1,6 +1,6 @@
 <template>
 	<view class="container">
-	  <uni-nav-bar :statusBar="true" :fixed="true" left-icon="back" title="DEMO" @clickLeft="clickLeft" />
+	  <uni-nav-bar :statusBar="true" :fixed="true"  title="DEMO" />
 	  <!-- 用户 openid -->
 	  <view class="userinfo">
 	    <button 
@@ -89,11 +89,6 @@
 			})
 		},
 		methods:{
-			clickLeft(){
-				uni.navigateBack({
-					delta:1
-				})
-			},
 			onGetUserInfo(e) {
 				if (!this.logged && e.detail.userInfo) {
 					this.logged = true;

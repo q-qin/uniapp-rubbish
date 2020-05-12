@@ -1,6 +1,6 @@
 <template>
 	<view class="container">
-	  <uni-nav-bar :statusBar="true" :fixed="true" left-icon="back" title="userConsole" @clickLeft="clickLeft" />
+	  <uni-nav-bar :statusBar="true" :fixed="true"  title="userConsole" />
 	  <view class="list">
 	    <view class="list-item" >
 	      <text class="request-text">用户 openid 获取成功</text>
@@ -32,11 +32,6 @@
 			this.openid = app.globalData.openid;
 		},
 		methods:{
-			clickLeft(){
-				uni.navigateBack({
-					delta:1
-				})
-			},
 		}
 	}
 </script>

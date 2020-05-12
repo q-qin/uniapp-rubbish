@@ -1,6 +1,6 @@
 <template>
 	<view class="search-wrapper">
-		<uni-nav-bar :statusBar="true" :fixed="true" left-icon="back" :homeIcon="homeIcon" title="垃圾分类查询" @clickLeft="clickLeft" />
+		<uni-nav-bar :statusBar="true" :fixed="true" title="垃圾分类查询" />
 		<view class="search">
 			<form :report-submit='true'>
 				<image src="../../static/images/search.png"></image>
@@ -9,7 +9,7 @@
 			</form>
 		</view>
 		<block v-if="myList.length>0 && showHistory">
-			<view class='historyName'>我的搜索记录
+			<view class='historyName'>搜索记录
 			</view>
 			<view class='myList'>
 				<view class='item' v-for="(item,index) in myList" :key="index" @tap="setInput" :data-intro="item">{{item}} </view>
@@ -28,7 +28,7 @@
 			<view @tap="goDetail" class="item" :data-desc="item.des" :data-intro="item.name" v-for="(item,index) in list" :key="index">
 				<view class="item-inner">
 					<view>{{item.name}}</view>
-					<text>{{item.type}}</text>
+					<text :class="item.des">{{item.type}}</text>
 				</view>
 				<i class="wx-icon-custom-gengduo"></i>
 			</view>
@@ -69,18 +69,17 @@
 				showHistory: true,
 				historyList: [],
 				myList: [],
+				myListShow:[],
 				homeIcon:false,
 			};
 		},
 		onLoad(options) {
 			if (wx.getStorageSync('myList')) {
 				var storageList = JSON.parse(wx.getStorageSync('myList'));
-				this.myList = storageList
+				this.myList = storageList;
+				this.myListShow = this.myList.reverse()
 			}
 			this.getHotList();
-			if (options.back){
-				this.homeIcon = true;
-			}
 			if (options.name) {
 				this.inputValue = decodeURIComponent(options.name);
 				var condition = {
@@ -142,7 +141,7 @@
 			// 查询
 			getList(e) {
 				var value = this.inputValue,
-					db = (this.searchType, wx.cloud.database());
+					db = wx.cloud.database();
 
 				if (value) {
 					this.showHistory = false;
@@ -153,6 +152,7 @@
 							key: 'myList',
 							data: JSON.stringify(this.myList)
 						});
+						this.myListShow = this.myList.reverse()
 					}
 				}
 				if (value) {
@@ -186,7 +186,8 @@
 								this.isOver = true;
 								// 无数据-增加订阅消息
 								uni.showModal({
-									content:`${value}还未录入,是否接受提醒?`,
+									content:`抱歉，${value}还未录入~`,
+									showCancel:false,
 									success(res) {
 										if (res.confirm) {
 											wx.requestSubscribeMessage({
@@ -403,7 +404,7 @@
 		line-height: 76rpx;
 		background: #00add8;
 		color: #fff;
-		border-radius: 0 38rpx 38rpx 0rpx;
+		border-radius: 0 76rpx 76rpx 0rpx;
 		margin: 0;
 		float: right;
 		padding: 0 20rpx;
@@ -427,11 +428,14 @@
 		background: #fff;
 		height: 150rpx;
 		box-sizing: border-box;
-		margin-bottom: 20rpx;
+		padding: 20rpx;
+		border-bottom: .5px solid #f0f0f0;
+		&:active{
+			background:#f0f0f0;
+		}
 	}
 
 	.box .item-inner {
-		width: 80%;
 		height: 130rpx;
 		font-size: 28rpx;
 		color: #555;
@@ -441,7 +445,6 @@
 	}
 
 	.box .item-inner view {
-		background: #fff;
 		font-size: 30rpx;
 		color: #333;
 		padding-left: 20rpx;
@@ -449,11 +452,19 @@
 	}
 
 	.box .item-inner text {
-		width: 100%;
-		overflow: hidden;
-		white-space: nowrap;
-		text-overflow: ellipsis;
 		padding-left: 20rpx;
+		&.residual{
+			color: #F7AC00;
+		}
+		&.hazardous{
+			color: #C7000B;
+		}
+		&.recyclable{
+			color: #0075C2;
+		}
+		&.household{
+			color: #009944;
+		}
 	}
 
 	.detail {
@@ -509,17 +520,20 @@
 		color: #333;
 		font-size: 32rpx;
 		padding: 20rpx 0;
+		margin: 0 30rpx;
+		border-bottom: .5px solid #EAEAEA;
 		font-weight: bold;
 	}
 
 	.history .unit {
-		border: 1px solid #f1f1f1;
+		border: .5px solid #f1f1f1;
 		height: 55rpx;
 		line-height: 55rpx;
 		display: inline-block;
 		padding: 0rpx 18rpx;
-		border-radius: 27.5rpx;
-		margin: 20rpx 15rpx;
+		border-radius: 55rpx;
+		margin: 20rpx 15rpx 0;
+		font-size: 24rpx;
 	}
 
 	.suggest {
@@ -566,16 +580,17 @@
 	}
 
 	.historyName {
-		padding: 20rpx;
-		font-size: 32rpx;
+		font-size: 30rpx;
 		color: #333;
-		height: 60rpx;
 		line-height: 60rpx;
 		background: #fff;
+		border-bottom: .5px solid #EAEAEA;
+		margin:0 40rpx;
+		padding: 20rpx 0 0;
 	}
 
 	.myList {
-		padding: 20rpx;
+		padding: 20rpx 30rpx 20rpx;
 		background: #fff;
 		margin-bottom: 20rpx;
 		overflow: hidden;
@@ -586,7 +601,7 @@
 		line-height: 55rpx;
 		color: #666;
 		font-size: 24rpx;
-		border: 1rpx solid #ececec;
+		border: .5rpx solid #ececec;
 		float: left;
 		padding: 0 20rpx;
 		margin: 5rpx;

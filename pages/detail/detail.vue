@@ -1,6 +1,6 @@
 <template>
 	<view class="detail" >
-		<uni-nav-bar :statusBar="true" :fixed="true" left-icon="back" :title="intro" @clickLeft="clickLeft" />
+		<uni-nav-bar :statusBar="true" :fixed="true" :title="intro"  />
 	    <view class="box" v-if="!loading">
 	        <view class="top">
 	            <image alt="" :src="imgUrl"></image>
@@ -22,14 +22,14 @@
 	                <text v-for="(c_item,c_index) in item.example" :key="c_index">{{c_item}}</text>
 	            </view>
 	        </view>
-	    </view>
-	    <view class="bottom" style="text-align:center;font-size:24rpx;padding:30rpx;" v-if="isOver">
-	        <text style="color:#666;">--- 我是有底线的 ---</text>
-	    </view>
-	    <view class="share">
-	        <image hight="20rpx" src="../../static/images/share.png"></image>
-	        <text>分享</text>
-	        <button openType="share"></button>
+			<view class="bottom" v-if="isOver">
+				<text class="endline">我是有底线的</text>
+			</view>
+			<view class="share">
+				<image hight="20rpx" src="../../static/images/share.png"></image>
+				<text>分享</text>
+				<button openType="share"></button>
+			</view>
 	    </view>
 	</view>
 </template>
@@ -46,22 +46,18 @@
 				require: [],
 				loading: true,
 				isOver: true,
-				navBar:{},
+				homeIcon:false,
 			};
 		},
 		onShareAppMessage() {
 		},
 		onLoad(options){
-			this.intro = options.intro;
+			console.log(options)
+			this.intro = decodeURIComponent(options.intro);
 			this.imgUrl = "../../static/images/" + options.desc + ".png";
 			this.loadDesc(options.desc);
 		},
 		methods:{
-			clickLeft() {
-				uni.navigateBack({
-					delta: 1
-				})
-			},
 			loadDesc(str){
 				console.log(str);
 				var condition = {
@@ -157,7 +153,7 @@
 	.item {
 	    background: #fff;
 	    padding: 20rpx 20rpx;
-	    margin: 20rpx 0;
+	    margin: 20rpx;
 	    border-radius: 3rpx;
 	    box-shadow: 0px 0px 3px #f1f1f1;
 	}
@@ -215,6 +211,36 @@
 	.backhome text {
 	    color: #666;
 	    font-size: 24rpx;
+	}
+	.bottom{
+		text-align:center;
+		font-size:24rpx;
+		padding:30rpx;
+		.endline{
+			color:#999;
+			position: relative;
+			display: inline-block;
+			&::before{
+				content: '';
+				width: 80rpx;
+				height: .5px;
+				background: #e5e5e5;
+				position: absolute;
+				left: 0;
+				top: 50%;
+				transform: translate(-120%,-50%);
+			}
+			&::after{
+				content: '';
+				width: 80rpx;
+				height: .5px;
+				background: #e5e5e5;
+				position: absolute;
+				right: 0;
+				top: 50%;
+				transform: translate(120%,-50%);
+			}
+		}
 	}
 	
 	.share {

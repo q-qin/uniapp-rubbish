@@ -1,6 +1,6 @@
 <template>
 	<view class="container">
-		<uni-nav-bar :statusBar="true" :fixed="true" left-icon="back" title="错误信息" @clickLeft="clickLeft" />
+		<uni-nav-bar :statusBar="true" :fixed="true" title="错误信息"  />
 		<view class='items'>
 			<view class='item' v-for="(item,index) in queryResult" :key="index">
 				<view class='name'>{{item.inputValue}}</view>
@@ -65,42 +65,18 @@
 					},
 				],
 				queryResult: '',
-				navBar: {},
 			};
 		},
 		onLoad() {
-			this.navBar.statusBarHeight = app.globalData.statusBarHeight;
-
-			this.navBar.title = '错误列表';
-			this.navBar.color = "#333333";
-			this.navBar.background = '#ffffff';
-			this.navBar.borderBottom = '1rpx solid #f1f1f1';
-			var pages = getCurrentPages();
-			var le = pages.length;
-			if (le < 2) {
-				this.navBar.type = 1;
-			} else {
-				this.navBar.type = 2;
-			}
-			this.model = app.globalData.model;
-			if (app.globalData.openid) {
-				this.openid = app.globalData.openid;
-			}
 			this.onQuery();
 		},
 		methods: {
-			// 返回
-			clickLeft() {
-				uni.navigateBack({
-					delta: 1
-				})
-			},
 			// 获取列表
 			onQuery() {
 				this.queryResult = [];
 				const db = wx.cloud.database()
 				// 查询当前用户所有的 counters
-				db.collection('error-list').where({}).get({
+				db.collection('error-list').where({}).limit(999).get({
 					success: res => {
 						this.queryResult = res.data;
 						console.log('[数据库] [查询记录] 成功: ', res.data)
@@ -119,7 +95,7 @@
 				this.obj.name = e.currentTarget.dataset.name;
 				this.showInsert = true;
 				this.ckid = e.currentTarget.id;
-				this.formId = e.currentTarget.dataset.formid;
+				this.formId = '';
 				this.openid = e.currentTarget.dataset.openid;
 			},
 			// radiochange
@@ -196,7 +172,7 @@
 					uni.showModal({
 						title: '提示',
 						content: '确定删除吗？',
-						success(res) {
+						success:res=> {
 							if (res.confirm) {
 								wx.cloud.callFunction({
 									name: "error_delete",
@@ -246,11 +222,6 @@
 					},
 					success: res => {
 						console.warn('[云函数] [openapi] templateMessage.send 调用成功：', res)
-						wx.showModal({
-							title: '发送成功',
-							content: '请返回微信主界面查看',
-							showCancel: false,
-						})
 						wx.showToast({
 							title: '发送成功，请返回微信主界面查看',
 						})

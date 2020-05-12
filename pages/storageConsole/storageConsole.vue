@@ -1,6 +1,6 @@
 <template>
 	<view class="container">
-	  <uni-nav-bar :statusBar="true" :fixed="true" left-icon="back" title="storageConsole" @clickLeft="clickLeft" />
+	  <uni-nav-bar :statusBar="true" :fixed="true" title="storageConsole" />
 	  <view class="list">
 	    <view class="list-item" >
 	      <text class="black">上传成功</text>
@@ -54,11 +54,6 @@
 			console.groupEnd()
 		},
 		methods:{
-			clickLeft(){
-				uni.navigateBack({
-					delta:1
-				})
-			}
 		}
 	}
 </script>

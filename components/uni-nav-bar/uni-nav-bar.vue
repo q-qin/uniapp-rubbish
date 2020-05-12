@@ -3,12 +3,14 @@
 		<view :class="{ 'uni-navbar--fixed': fixed, 'uni-navbar--shadow': shadow, 'uni-navbar--border': border }" :style="{ 'background-color': backgroundColor }" class="uni-navbar__content">
 			<uni-status-bar v-if="statusBar" />
 			<view :style="{ color: color,backgroundColor: backgroundColor }" class="uni-navbar__header uni-navbar__content_view">
-				<view @tap="onClickLeft" class="uni-navbar__header-btns uni-navbar__header-btns-left uni-navbar__content_view">
-					<view class="uni-navbar__content_view" v-if="leftIcon.length">
-						<uni-icons :color="color" :type="leftIcon" size="24" />
-					</view>
-					<view class="uni-navbar__content_view" v-if="homeIcon" @tap.stop="onClickHome">
-						<uni-icons :color="color" type="home-filled" size="18" />
+				<view  class="uni-navbar__header-btns uni-navbar__header-btns-left uni-navbar__content_view">
+					<view class="capsule">
+						<view class="back" @tap="onClickLeft">
+							<image class="image" src='../../static/images/nav/back.svg'></image>
+						</view>
+						<view class="home"  @tap="onClickHome">
+							<image class="image" src='../../static/images/nav/home.svg'></image>
+						</view>
 					</view>
 					<view :class="{ 'uni-navbar-btn-icon-left': !leftIcon.length }" class="uni-navbar-btn-text uni-navbar__content_view" v-if="leftText.length">
 						<text :style="{ color: color, fontSize: '14px' }">{{ leftText }}</text>
@@ -126,7 +128,10 @@
 		},
 		methods: {
 			onClickLeft() {
-				this.$emit("clickLeft");
+				// this.$emit("clickLeft");
+				uni.navigateBack({
+					delta:1
+				})
 			},
 			onClickRight() {
 				this.$emit("clickRight");
@@ -140,7 +145,7 @@
 	};
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 	.uni-nav-bar-text {
 		/* #ifdef APP-PLUS */
 		font-size: 34rpx;
@@ -166,8 +171,41 @@
 		/* #endif */
 		align-items: center;
 		flex-direction: row;
-		/* background-color: #FFFFFF;
- */
+	}
+	.capsule{
+	  margin-left: 10rpx;
+	  width: 100px;
+	  height: 30px;
+	  display: flex;
+	  align-items: center;
+	  .back,.home{
+			width: 30px;
+			height: 30px;
+			overflow: hidden;
+			display: block;
+			position: relative;
+			border:.5px solid #EAEAEA;
+			.image{
+			  width: 50%;
+			  height: 100%;
+			  position: absolute;
+			  left: 50%;
+			  top: 50%;
+			  transform: translate(-50%,-50%);
+			}
+			&:active{
+				background: #999;
+			}
+	  }
+	  .back{
+		  border-top-left-radius: 30px;
+		  border-bottom-left-radius: 30px;
+	  }
+	  .home{
+		  border-top-right-radius: 30px;
+		  border-bottom-right-radius: 30px;
+		  border-left: none;
+	  }
 	}
 
 	.uni-navbar__header {
@@ -178,8 +216,6 @@
 		height: 44px;
 		line-height: 44px;
 		font-size: 16px;
-		/* background-color: #ffffff;
- */
 	}
 
 	.uni-navbar__header-btns {
@@ -197,7 +233,6 @@
 		/* #ifndef APP-NVUE */
 		display: flex;
 		/* #endif */
-		width: 150rpx;
 		justify-content: flex-start;
 	}
 

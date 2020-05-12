@@ -4,7 +4,7 @@
 	    <view class='banner'>
 	        <image src='../../static/images/bg.png'></image>
 	        <view class='topBox'>
-	            <view class='tt' :style="navBar.statusBarStyle">垃圾分类</view>
+	            <view class='tt'>垃圾分类</view>
 	            <view class="title" @longpress='goError'>配合垃圾分类, 争做文明市民</view>
 	            <view @tap="goSearch" class="top">
 	                <view class="search">
@@ -54,6 +54,15 @@
 	    <!-- <view class="adContainer">
 	        <ad unitId="adunit-0ae3a247d1891eaa"></ad>
 	    </view> -->
+		<view class="bannerIMG" v-if="banner">
+			<image class="uni-image" :src="banner" @tap="viewer" ></image>
+		</view>
+		<view class="bg-mask" v-if="dialogShow">
+			<view class="bg-white">
+				<image class="uni-image" :src="dialogIMG" ></image>
+				<view class="close" @tap="dialogShow=false;">关闭</view>
+			</view>
+		</view>
 	</view>
 </template>
 
@@ -63,16 +72,13 @@
 	export default {
 		data() {
 			return {
-				navBar:{
-					statusBarHeight:0,
-					statusBarStyle:'',
-				}
+				banner:'',
+				dialogIMG:'',
+				dialogShow:false,
 			}
 		},
 		onLoad() {
-			this.navBar.statusBarHeight = app.globalData.statusBarHeight;
-			this.navBar.statusBarStyle = `padding-top:${this.navBar.statusBarHeight+75}rpx`;
-			
+			this.getBanner()
 		},
 		onShareAppMessage() {
 			return {
@@ -81,6 +87,21 @@
 			};
 		},
 		methods: {
+			async getBanner(){
+				const res = await wx.cloud.callFunction({
+					name: "banner_get",
+					data: {
+						position:'index'
+					}
+				})
+				if (res.result.data.length > 0){
+					this.banner = res.result.data[0].picture;
+					this.dialogIMG = res.result.data[0].url;
+				}
+			},
+			viewer(){
+				this.dialogShow = true;
+			},
 			goError(){
 				wx.navigateTo({
 					url: '/pages/error/list',
@@ -108,8 +129,9 @@
 
 <style lang="scss" scoped>
 	.container {
-	 
-	 
+	}
+	.swiper{
+		width: 100vw;
 	}
 	.banner{
 	  width: 750rpx;
@@ -133,6 +155,7 @@
 	  font-size: 32rpx;
 	  color: #ffffff;
 	  font-weight: bold;
+	  padding-top: 150rpx;
 	}
 	.topBox  .title {
 	    font-size: 26rpx;
@@ -270,5 +293,42 @@
 	    width: 80%;
 	    height: 80rpx;
 	    font-size: 32rpx;
+	}
+	.bannerIMG{
+		width: 100vw;
+		height: 100rpx;
+	}
+	.uni-image{
+		width: 100%;
+		height: 100%;
+	}
+	.bg-mask{
+		position: fixed;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		background: tgba(0,0,0,.5);
+		z-index: 1000;
+		.bg-white{
+			width: 470rpx;
+			height: 535rpx;
+			background: #fff;
+			position: absolute;
+			top: 50%;
+			left: 0;
+			right: 0;
+			margin: auto;
+			transform: translateY(-50%);
+			.close{
+				width: 140rpx;
+				text-align: center;
+				padding: 10rpx 20rpx;
+				margin: 40rpx auto;
+				background: #fff;
+				color: #333;
+				border-radius: 100rpx;
+			}
+		}
 	}
 </style>
