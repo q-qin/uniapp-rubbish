@@ -39,7 +39,7 @@ exports.main = async (event, context) => {
 async function sendNoticeMessage(event){
   const sendResult = await cloud.openapi.subscribeMessage.send({
     touser: event.openid,
-    templateId:'gYp1N9tLx7dICbcJrsuyR_Av-7VFsBJ20NYb3zB2Zn0',
+    templateId:'-eXbIPAyCDneRV0Fz0CmOQgIQdwR8sUQ9SbaJIcyUZQ',
     page: '/pages/search/search?back=1&name=' + encodeURIComponent(event.obj.name),
 	lang:"zh_CN",
     data: {

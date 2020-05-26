@@ -45,13 +45,18 @@
     },
     "quickapp" : {},
     "mp-weixin" : {
-        "appid" : "wxb78e572fba08283e",
-		"cloudfunctionRoot":"cloudfunctions",
+        "appid" : "wxf2ccd26da6ba693f",
+        "cloudfunctionRoot" : "cloudfunctions",
         "setting" : {
             "urlCheck" : true
         },
         "uniStatistics" : {
             "enable" : false
+        },
+        "permission" : {
+            "scope.userLocation" : {
+                "desc" : "用于使用小程序服务"
+            }
         }
     },
     "uniStatistics" : {
@@ -65,6 +70,10 @@
     "mp-alipay" : {
         "uniStatistics" : {
             "enable" : false
+        },
+        "appid" : "2021001161663065",
+        "cloud" : {
+            "type" : "miniappServerless"
         }
     },
     "mp-baidu" : {

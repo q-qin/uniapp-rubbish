@@ -35,7 +35,39 @@
 		"path": "pages/openapi/openapi"
 	}, {
 		"path": "pages/index/webview"
+	}, {
+		"path": "pages/mine/index"
+	}, {
+		"path": "pages/mine/history"
+	}, {
+		"path": "pages/mine/favorite"
+	}, {
+		"path": "pages/find/index"
+	}, {
+		"path": "pages/find/subject"
 	}],
+	"tabBar": {
+		"color": "#666666",
+		"selectedColor": "#00adb8",
+		"borderStyle": "black",
+		"backgroundColor": "#ffffff",
+		"list": [{
+			"pagePath": "pages/index/index",
+			"iconPath": "static/images/tabbar/index.png",
+			"selectedIconPath": "static/images/tabbar/index-on.png",
+			"text": "查询"
+		}, {
+			"pagePath": "pages/find/index",
+			"iconPath": "static/images/tabbar/find.png",
+			"selectedIconPath": "static/images/tabbar/find-on.png",
+			"text": "发现"
+		}, {
+			"pagePath": "pages/mine/index",
+			"iconPath": "static/images/tabbar/my.png",
+			"selectedIconPath": "static/images/tabbar/my-on.png",
+			"text": "我的"
+		}]
+	},
 	"globalStyle": {
 		"backgroundColor": "#F6F6F6",
 		"backgroundTextStyle": "light",

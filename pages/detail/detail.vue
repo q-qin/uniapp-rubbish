@@ -2,16 +2,17 @@
 	<view class="detail" >
 		<uni-nav-bar :statusBar="true" :fixed="true" :title="intro"  />
 	    <view class="box" v-if="!loading">
-	        <view class="top">
+			<uni-fav class="myfav" v-if="canFav" :checked="checked" bg-color-checked="#00adb8" @click="updateFvorite"></uni-fav>
+	        <view class="top" >
 	            <image alt="" :src="imgUrl"></image>
-	            <view>
-	            <text style="font-weight: 600; font-size: 36rpx;color: #00adb8;">{{type}}
-	            </text>{{detail}}</view>
+	            <view class="des" :class="des">
+					<text style="font-weight: bold; font-size: 40rpx;" class="margin-right-10">{{type}}</text>
+					{{detail}}
+				</view>
 	        </view>
 	        <view class="require" v-if="require.length>0">
-	            <text>投放要求</text>
-	            <view v-for="(item,index) in require" :key="index">
-	                <span class="wx-icon-custom-tishi"></span>
+	            <text class="title">投放要求</text>
+	            <view class="block" v-for="(item,index) in require" :key="index">
 	                {{item}}
 	            </view>
 	        </view>
@@ -35,10 +36,13 @@
 </template>
 
 <script>
+	// 在页面中定义插屏广告
+	let interstitialAd = null
 	export default {
 		data() {
 			return {
 				intro:'',
+				des:"",
 				type: "",
 				category: [],
 				detail: "",
@@ -47,18 +51,71 @@
 				loading: true,
 				isOver: true,
 				homeIcon:false,
+				checked:false,
+				detailId:0,
+				canFav:true,
+				myFavorite:[],
 			};
 		},
 		onShareAppMessage() {
 		},
 		onLoad(options){
 			console.log(options)
+			this.detailId = options._id;
+			this.des = options.desc;
 			this.intro = decodeURIComponent(options.intro);
 			this.imgUrl = "../../static/images/" + options.desc + ".png";
+			if(['干垃圾','有害垃圾','可回收物','湿垃圾'].find(v=>v == this.intro)){
+				this.canFav = false;
+			}
 			this.loadDesc(options.desc);
+			this.getFavStatus(options._id);
+			
+			// 在页面onLoad回调事件中创建插屏广告实例
+			if (wx.createInterstitialAd) {
+			  interstitialAd = wx.createInterstitialAd({
+			    adUnitId: 'adunit-53045eeeac1f2d7d'
+			  })
+			  interstitialAd.onLoad(() => {})
+			  interstitialAd.onError((err) => {})
+			  interstitialAd.onClose(() => {})
+			}
+		},
+		onShow() {
+		  // 在适合的场景显示插屏广告
+		  if (interstitialAd) {
+		    interstitialAd.show().catch((err) => {
+		      console.error(err)
+		    })
+		  }
 		},
 		methods:{
-			loadDesc(str){
+			updateFvorite(){
+				if(!this.checked){
+					this.myFavorite.push({
+						_id:this.detailId,
+						type:this.type,
+						name:this.intro,
+						des:this.des
+					})
+				}else{
+					let favIndex = this.myFavorite.findIndex(v=>v._id==this.detailId)
+					this.myFavorite.splice(favIndex,1)
+				}
+				uni.setStorage({
+					key:'myFavorite',
+					data:JSON.stringify(this.myFavorite)
+				})
+				this.checked = !this.checked;
+			},
+			getFavStatus(id){
+				this.myFavorite = JSON.parse(uni.getStorageSync('myFavorite') || '[]')
+				if(this.myFavorite.findIndex(v=>v._id==id) > -1 ){
+					// 已收藏
+					this.checked = true;
+				}
+			},
+			async loadDesc(str){
 				console.log(str);
 				var condition = {
 				  desc: str
@@ -66,7 +123,7 @@
 				uni.showLoading({
 				    title: '加载中'
 				});
-				wx.cloud.callFunction({
+				let res = await wx.cloud.callFunction({
 				  name: "collection_get",
 				  data: {
 					database: "rubbish",
@@ -74,22 +131,21 @@
 					num: 1,
 					condition: condition
 				  }
-				}).then((res)=> {
-				  console.log(res);
-				  if (res.result.data.length) {
-					var data = res.result.data[0];
-					this.type = data.type,
-					this.category = data.category;
-					this.detail = data.detail;
-					this.require = data.require;
-					this.loading = false;
-					uni.hideLoading();
-				  } else{ 
-					  uni.hideLoading();
-					  this.loading = false;
-					  this.isOver = true;
-				  }
-				}).catch(console.error);
+				})
+			  console.log(res);
+			  if (res.result.data.length) {
+				var data = res.result.data[0];
+				this.type = data.type,
+				this.category = data.category;
+				this.detail = data.detail;
+				this.require = data.require;
+				this.loading = false;
+				uni.hideLoading();
+			  } else{ 
+				  uni.hideLoading();
+				  this.loading = false;
+				  this.isOver = true;
+			  }
 			}
 		}
 	}
@@ -97,15 +153,36 @@
 
 <style lang="scss" scoped>
 	.detail {
-	    padding: 4rpx  0 30rpx 0;
+	    padding: 0 0 30rpx 0;
 	    font-size: 32rpx;
+	}
+	.box{
+		position: relative;
+	}
+	.myfav{
+		position: absolute;
+		top: 20rpx;
+		right: 20rpx;
 	}
 	
 	.top {
-	    padding: 10rpx 0;
 	    display: flex;
 	    flex-direction: column;
 	    align-items: center;
+		color: #fff;
+		margin: 20rpx;
+		.residual{
+			background: #3f6ba8;
+		}
+		.hazardous{
+			background: #b43a53;
+		}
+		.recyclable{
+			background: #06a438;
+		}
+		.household{
+			background: #88928a;
+		}
 	}
 	
 	.top image {
@@ -113,21 +190,22 @@
 	    width: 160rpx;
 	}
 	
-	.top view {
-	    padding: 20rpx 20rpx 0 20rpx;
-	    color: #666666;
+	.top .des {
+		padding: 30rpx;
 	    font-size: 30rpx;
 	    line-height: 45rpx;
+		margin-top: 20rpx;
+		border-radius: 10rpx;
 	}
 	
 	.require {
 	    color: #555;
 	    padding: 0 20rpx;
-	    font-size: 28rpx;
-	    line-height: 1.5;
+	    font-size: 30rpx;
+		line-height: 45rpx;
 	}
 	
-	.require text {
+	.require .title {
 	    display: block;
 	    font-size: 30rpx;
 	    color: #333;
@@ -137,8 +215,8 @@
 	    margin: 20rpx 0;
 	}
 	
-	.require span {
-	    color: #ee7171;
+	.require .block {
+		line-height: 45rpx;
 	}
 	
 	.title {
@@ -160,9 +238,10 @@
 	
 	.item .tag {
 	    display: block;
-	    text-align: center;
+	    text-align: left;
 	    font-size: 30rpx;
 	    color: #444;
+		margin: 10rpx;
 	    padding-bottom: 10rpx;
 	}
 	
@@ -170,7 +249,7 @@
 	    display: flex;
 	    flex-wrap: wrap;
 	    padding: 0 0 4rpx 0;
-	    justify-content: center;
+	    justify-content: flex-start;
 	    align-items: center;
 	}
 	
@@ -180,10 +259,9 @@
 	    line-height: 40rpx;
 	    padding: 0rpx 20rpx;
 	    background: #ffffff;
-	    margin: 10rpx;
+	    margin: 10rpx 10rpx 10rpx 0;
 	    color: #777;
 	    font-size: 24rpx;
-	    border-radius: 20rpx;
 	}
 	
 	.backhome {

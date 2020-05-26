@@ -12,22 +12,22 @@
     lodash.set "4.3.2"
     lodash.unset "4.5.2"
 
-"@cloudbase/database@1.0.0-beta.1":
-  version "1.0.0-beta.1"
-  resolved "https://registry.yarnpkg.com/@cloudbase/database/-/database-1.0.0-beta.1.tgz#ecf3260b32d3f126a7d3138969d7a2c444345add"
-  integrity sha512-C3sZfIWe4a1kEZkhlxQh2WtMubJpt7NYF0rUT0fOfPY5mrxNq74xo0EnxPROpbW0cLvTFZvSFruGuqxQEQkuDw==
+"@cloudbase/database@1.0.0-beta.2":
+  version "1.0.0-beta.2"
+  resolved "https://registry.yarnpkg.com/@cloudbase/database/-/database-1.0.0-beta.2.tgz#858d160e18759464c9cfd2db54a0f84d627d4589"
+  integrity sha512-ltVsP0B6Zc9G5bdTMZInyjxXkt5RA1xIZR2nxHK6FmbRYHQqOQcjZ5skih/VvqvPZ7X2U8w0Y0Zr71fYOTuGoQ==
   dependencies:
     bson "^4.0.3"
     lodash.clonedeep "4.5.0"
     lodash.set "4.3.2"
     lodash.unset "4.5.2"
 
-"@cloudbase/node-sdk@2.0.0-beta.5":
-  version "2.0.0-beta.5"
-  resolved "https://registry.yarnpkg.com/@cloudbase/node-sdk/-/node-sdk-2.0.0-beta.5.tgz#c67453e789a5be6859e168e30a6be0fc70554cc6"
-  integrity sha512-rHV5hRiMKcJciqAfKWS/0QWkOwuc7YXKbN1fVcLsO7H6YE8vC+T+6/KuGpHgpDKXVeuxKoRmm30/tLbIwdOAFQ==
+"@cloudbase/node-sdk@2.0.0-beta.6":
+  version "2.0.0-beta.6"
+  resolved "https://registry.yarnpkg.com/@cloudbase/node-sdk/-/node-sdk-2.0.0-beta.6.tgz#ca51f302167bd23ab508eadfbc915fe33bb43910"
+  integrity sha512-u2EdndZKCXzsNqJu6a67DUvmMu+znVTcLep8YkpAcOQBS0tCLjCEdIqIO5LuPQ4bG+zWXAbQHY6ysnwSqzAcEg==
   dependencies:
-    "@cloudbase/database" "1.0.0-beta.1"
+    "@cloudbase/database" "1.0.0-beta.2"
     "@cloudbase/signature-nodejs" "1.0.0-beta.0"
     is-regex "^1.0.4"
     jsonwebtoken "^8.5.1"
@@ -695,12 +695,12 @@ verror@1.10.0:
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
 
-wx-server-sdk@^2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/wx-server-sdk/-/wx-server-sdk-2.0.2.tgz#67e566c866a0bd7fd1d1661952a82d0ec0c957be"
-  integrity sha512-UXrw2YNNssZIIMFc8W3P7ajiSxyniTYcsKRxH+6tD+pKcXszGkll0EnAHEJJafm/hH+aISBmU+WJwIcvg8OQIw==
+wx-server-sdk@latest:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/wx-server-sdk/-/wx-server-sdk-2.0.3.tgz#34b574a80f37ecf53713443c9772ee8aecffcb28"
+  integrity sha512-ZIop1uhKAZUicwP9C30FacfgJ4WKn0c1IQzidzaMYdryk86FGeGZIl13w2nojGLgSz9C4DUc9FfyrD0RC73mqg==
   dependencies:
-    "@cloudbase/node-sdk" "2.0.0-beta.5"
+    "@cloudbase/node-sdk" "2.0.0-beta.6"
     protobufjs "6.8.8"
     tslib "^1.9.3"
 

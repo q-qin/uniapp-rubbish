@@ -4,35 +4,38 @@
 	    <view class='banner'>
 	        <image src='../../static/images/bg.png'></image>
 	        <view class='topBox'>
-	            <view class='tt'>垃圾分类</view>
+	            <view class='tt'>{{city}}垃圾分类</view>
 	            <view class="title" @longpress='goError'>配合垃圾分类, 争做文明市民</view>
 	            <view @tap="goSearch" class="top">
 	                <view class="search">
 	                  <image src="../../static/images/searchbg.png"></image>
-	                  <!-- <input disabled placeholder="日常生活垃圾分类查询"></input> -->
 	                </view>
 	            </view>
 	        </view>
 	
 	    </view>
 	   
-	    <!-- <button style="width:100%" class="tip" @tap="addrecord">新增</button> -->
 	    <view class="box">
-	        <view @tap="goDetail" data-desc="recyclable" data-intro="可回收物">
-	            <image class="img" mode="aspectFit" src="../../static/images/khs.png"></image>
-	             <view class='des'>可回收物</view>
+			<view class="title">垃圾种类</view>
+	        <view class="box-item flex justify-center align-center" @tap="goDetail" data-desc="recyclable" data-intro="可回收物">
+	            <image class="img" mode="aspectFit" src="../../static/images/recyclable.png"></image>
+	            <view class='des'>可回收物</view>
+				<uni-icons type="arrowright" size="20" color="#cccccc"></uni-icons>
 	        </view>
-	        <view @tap="goDetail" data-desc="hazardous" data-intro="有害垃圾">
-	            <image class="img" src="../../static/images/yh.png"></image>
+	        <view class="box-item flex justify-center align-center" @tap="goDetail" data-desc="hazardous" data-intro="有害垃圾">
+	            <image class="img" src="../../static/images/hazardous.png"></image>
 	            <view class='des'>有害垃圾</view>
+				<uni-icons type="arrowright" size="20" color="#cccccc"></uni-icons>
 	        </view>
-	        <view @tap="goDetail" data-desc="household" data-intro="湿垃圾">
-	            <image class="img" src="../../static/images/cy.png"></image>
+	        <view class="box-item flex justify-center align-center" @tap="goDetail" data-desc="household" data-intro="湿垃圾">
+	            <image class="img" src="../../static/images/household.png"></image>
 	            <view class='des'>湿垃圾</view>
+				<uni-icons type="arrowright" size="20" color="#cccccc"></uni-icons>
 	        </view>
-	        <view @tap="goDetail" data-desc="residual" data-intro="干垃圾">
-	            <image class="img" src="../../static/images/qq.png"></image>
-	             <view class='des'>干垃圾</view>
+	        <view class="box-item flex justify-center align-center" @tap="goDetail" data-desc="residual" data-intro="干垃圾">
+	            <image class="img" src="../../static/images/residual.png"></image>
+	            <view class='des'>干垃圾</view>
+				<uni-icons type="arrowright" size="20" color="#cccccc"></uni-icons>
 	        </view>
 	    </view>
 	    
@@ -51,9 +54,10 @@
 	    </view>
 	        <view class="content">本系统仅供参考，具体分类要求以属地专业管理部门为准。如果发现系统中有不当之处，请留言反馈，非常感谢！</view>
 	    </view>
-	    <!-- <view class="adContainer">
-	        <ad unitId="adunit-0ae3a247d1891eaa"></ad>
-	    </view> -->
+	    <view class="adContainer">
+	        <ad unitId="adunit-1115684123622104"></ad>
+			<ad unit-id="adunit-105b9b02352f28e9" ad-type="grid" grid-opacity="0.8" grid-count="5" ad-theme="white"></ad>
+	    </view>
 		<view class="bannerIMG" v-if="banner">
 			<image class="uni-image" :src="banner" @tap="viewer" ></image>
 		</view>
@@ -68,6 +72,8 @@
 
 <script>
 	const app = getApp();
+	const QQMapWX = require('@/static/js/qqmap-wx-jssdk1.2/qqmap-wx-jssdk.js');
+	let qqmapsdk;
 	
 	export default {
 		data() {
@@ -75,9 +81,14 @@
 				banner:'',
 				dialogIMG:'',
 				dialogShow:false,
+				city:'全国'
 			}
 		},
 		onLoad() {
+			// 实例化API核心类
+			qqmapsdk = new QQMapWX({
+				key: 'FCXBZ-E2S3F-TWCJJ-JVVOR-GCLMT-2ABZU'
+			});
 			this.getBanner()
 		},
 		onShareAppMessage() {
@@ -86,7 +97,92 @@
 			  path: "pages/index/index"
 			};
 		},
+		onShow(){
+			wx.getSetting({
+				success: (res) => {
+				  if (res.authSetting['scope.userLocation'] != undefined && res.authSetting['scope.userLocation'] != true) {
+						wx.showModal({
+						  title: '请求授权当前位置',
+						  content: '需要获取您的地理位置，请确认授权',
+						  success: (res)=> {
+							if (res.cancel) {
+							  wx.showToast({
+								title: '拒绝授权',
+								icon: 'none',
+								duration: 1000
+							  })
+							} else if (res.confirm) {
+							  wx.openSetting({
+								success: (dataAu)=> {
+								  if (dataAu.authSetting["scope.userLocation"] == true) {
+									wx.showToast({
+									  title: '授权成功',
+									  icon: 'success',
+									  duration: 1000
+									})
+									//再次授权，调用wx.getLocation的API
+									this.getLocation();
+								  } else {
+									wx.showToast({
+									  title: '授权失败',
+									  icon: 'none',
+									  duration: 1000
+									})
+								  }
+								}
+							  })
+							}
+						  }
+						})
+					  } else if (res.authSetting['scope.userLocation'] == undefined) {
+						//调用wx.getLocation的API
+						this.getLocation();
+					  }
+					  else {
+						//调用wx.getLocation的API
+						this.getLocation();
+					  }
+				}
+			})
+		},
 		methods: {
+			getLocation(){
+				wx.getLocation({
+				  type: 'wgs84',
+				  success: (res)=> {
+					console.log(JSON.stringify(res))
+					var latitude = res.latitude
+					var longitude = res.longitude
+					var speed = res.speed
+					var accuracy = res.accuracy;
+					this.getLocal(latitude, longitude)
+				  },
+				  fail: function (res) {
+					console.log('fail' + JSON.stringify(res))
+				  }
+				})
+			},
+			getLocal(latitude, longitude){
+				qqmapsdk.reverseGeocoder({
+				  location: {
+					latitude: latitude,
+					longitude: longitude
+				  },
+				  success: (res)=> {
+					console.log(JSON.stringify(res));
+					let province = res.result.ad_info.province
+					let city = res.result.ad_info.city
+					this.city = city;
+			 
+				  },
+				  fail: function (res) {
+					console.log(res);
+				  },
+				  complete: function (res) {
+					// console.log(res);
+				  }
+				});
+			},
 			async getBanner(){
 				const res = await wx.cloud.callFunction({
 					name: "banner_get",
@@ -191,25 +287,37 @@
 	
 	.box {
 	    margin: 20rpx auto 20rpx;
-	    padding: 0 30rpx;
+	    padding: 0 60rpx;
+		width: 680rpx;
+		background: #FFFFFF;
+		border-radius: 30rpx;
+		box-shadow: 0 0 10rpx #e5e5e5;
+	}
+	.box .title{
+		font-size: 48rpx;
+		font-weight: bold;
+		padding: 34rpx 0 ;
+		color: #000;
 	}
 	
-	.box view {
-	    display: inline-block;
-	    width: 50%;
+	.box .box-item {
+		width: 100%;
 	    text-align: center;
-	    margin-top: 20rpx;
+		padding: 34rpx 0 ;
+		border-top: .5px solid #e5e5e5;
 	}
 	
-	.img {
-	    width: 169rpx;
-	    height: 169rpx;
-	    display: block;
-	    margin: 0 auto;
+	.box .box-item .img {
+	    width: 90rpx;
+	    height: 90rpx;
+	    display: inline-block;
 	}
-	.box view .des{
-	  font-size: 26rpx;
+	.box .box-item .des{
+	  font-size: 36rpx;
 	  color: #666666;
+	  flex: 1;
+	  text-align: left;
+	  margin-left: 30rpx;
 	}
 	
 	.notice {

@@ -143,24 +143,30 @@
 				})
 			},
 			onAdd() {
-				const db = wx.cloud.database()
-				db.collection('all_rubbish').add({
-					data: this.obj,
-					success: res => {
-						// 在返回结果中会包含新创建的记录的 _id
-
-						wx.showToast({
-							title: '新增记录成功',
-						});
-						this.notice();
-						this.updateList();
-					},
-					fail: err => {
-						wx.showToast({
-							icon: 'none',
-							title: '新增记录失败'
-						})
-						console.error('[数据库] [新增记录] 失败：', err)
+				this.notice();
+				this.updateList();
+				uni.showModal({
+					content:'是否录入数据库？',
+					success: (res) => {
+						if(res.confirm){
+							const db = wx.cloud.database()
+							db.collection('all_rubbish').add({
+								data: this.obj,
+								success: res => {
+									// 在返回结果中会包含新创建的记录的 _id
+									wx.showToast({
+										title: '新增记录成功',
+									});
+								},
+								fail: err => {
+									wx.showToast({
+										icon: 'none',
+										title: '新增记录失败'
+									})
+									console.error('[数据库] [新增记录] 失败：', err)
+								}
+							})
+						}
 					}
 				})
 			},

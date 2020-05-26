@@ -104,6 +104,13 @@
 					this.showSync = true;
 				})
 			},
+			setSearchVal(val){
+				this.show = true;
+				this.searchVal = val;
+				this.$nextTick(() => {
+					this.showSync = true;
+				})
+			},
 			clear() {
 				this.searchVal = ""
 			},
@@ -184,7 +191,7 @@
 
 	.uni-searchbar__box-icon-clear {
 		align-items: center;
-		line-height: 24px;
+		/* line-height: 24px; */
 		padding-left: 5px;
 	}
 

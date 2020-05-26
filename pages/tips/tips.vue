@@ -2,7 +2,7 @@
 	<view class="tips">
 		<uni-nav-bar :statusBar="true" :fixed="true" title="垃圾分类小贴士" />
 	    <view class="top suggest">
-	        <image class="img" src="http://r3.3keji.com/code.jpg" @tap="viewer" ></image>
+	        <image class="img" src="@/static/images/code.jpg" @tap="viewer" ></image>
 	    </view>
 	    <view class="suggest">
 	        <view class="title">
@@ -59,7 +59,7 @@
 		methods:{
 			viewer(){
 				uni.previewImage({
-					urls:['http://r3.3keji.com/code.jpg']
+					urls:['https://676c-global-zae8p-1254274950.tcb.qcloud.la/qcode.jpg']
 				})
 			}
 		}
